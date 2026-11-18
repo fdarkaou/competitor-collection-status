@@ -1,0 +1,6 @@
+# Example list matching examples/run.json (made-up apps)
+1000000001=Example Meal Planner
+1000000002=Example Recipe Box
+1000000003=Example Grocery List
+1000000004=Example Macro Coach
+1000000005=Example Meal Kit

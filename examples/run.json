@@ -1,0 +1,44 @@
+{
+  "tool": "competitor-collection-status/raw",
+  "fetchedAt": "2026-11-18T08:00:00.000Z",
+  "tenancy": null,
+  "staleDays": 30,
+  "checks": ["ads", "aso", "tech", "requests"],
+  "apps": [
+    {
+      "storeId": "1000000001", "label": "Example Meal Planner",
+      "adRefresh": { "appStoreId": "1000000001", "latest": { "state": "completed", "requestedAt": "2026-11-12T08:00:00.000Z", "settledAt": "2026-11-12T08:06:00.000Z", "newAdCount": 4 }, "quota": { "kind": "daily", "limit": 3, "used": 1, "remaining": 2, "resetAt": "2026-11-19T08:00:00.000Z" } },
+      "aso": { "storeId": "1000000001", "country": "us", "language": "en_us", "status": "completed", "updatedAt": "2026-11-10T00:00:00.000Z", "retryAt": null },
+      "technology": { "storeId": "1000000001", "status": "observed", "collectedAt": "2026-11-01T04:00:00.000Z", "sdk": { "status": "observed", "collectedAt": "2026-11-01T04:00:00.000Z" }, "bestRanks": { "status": "observed", "collectedAt": "2026-11-01T04:00:00.000Z" } },
+      "dataRequests": { "data": [] }
+    },
+    {
+      "storeId": "1000000002", "label": "Example Recipe Box",
+      "adRefresh": { "appStoreId": "1000000002", "latest": { "state": "completed", "requestedAt": "2026-09-20T08:00:00.000Z", "settledAt": "2026-09-20T08:09:00.000Z", "newAdCount": 11 }, "quota": { "kind": "daily", "limit": 3, "used": 1, "remaining": 2, "resetAt": "2026-11-19T08:00:00.000Z" } },
+      "aso": { "storeId": "1000000002", "country": "us", "language": "en_us", "status": "completed", "updatedAt": "2026-08-30T00:00:00.000Z", "retryAt": null },
+      "technology": { "storeId": "1000000002", "status": "observed", "collectedAt": "2026-09-02T04:00:00.000Z", "sdk": { "status": "observed", "collectedAt": "2026-09-02T04:00:00.000Z" }, "bestRanks": { "status": "observed", "collectedAt": "2026-09-02T04:00:00.000Z" } },
+      "dataRequests": { "data": [{ "id": "11111111-1111-4111-8111-000000000001", "kind": "history", "status": "requested", "requestedAt": "2026-10-01T00:00:00.000Z" }] }
+    },
+    {
+      "storeId": "1000000003", "label": "Example Grocery List",
+      "adRefresh": { "appStoreId": "1000000003", "latest": { "state": "running", "requestedAt": "2026-11-18T07:58:00.000Z", "settledAt": null, "newAdCount": null }, "quota": { "kind": "daily", "limit": 3, "used": 1, "remaining": 2, "resetAt": "2026-11-19T08:00:00.000Z" } },
+      "aso": { "storeId": "1000000003", "country": "us", "language": "en_us", "status": "queued", "updatedAt": "2026-11-18T07:50:00.000Z", "retryAt": null },
+      "technology": { "storeId": "1000000003", "status": "observed", "collectedAt": "2026-11-05T04:00:00.000Z", "sdk": { "status": "observed", "collectedAt": "2026-11-05T04:00:00.000Z" }, "bestRanks": { "status": "not_collected" } },
+      "dataRequests": { "data": [{ "id": "11111111-1111-4111-8111-000000000002", "kind": "aso", "status": "requested", "requestedAt": "2026-11-18T07:49:00.000Z" }] }
+    },
+    {
+      "storeId": "1000000004", "label": "Example Macro Coach",
+      "adRefresh": { "appStoreId": "1000000004", "latest": { "state": "not_matched", "requestedAt": "2026-11-14T08:00:00.000Z", "settledAt": "2026-11-14T08:01:00.000Z", "newAdCount": null }, "quota": { "kind": "daily", "limit": 3, "used": 1, "remaining": 2, "resetAt": "2026-11-19T08:00:00.000Z" } },
+      "aso": { "storeId": "1000000004", "country": "us", "language": "en_us", "status": "unavailable", "updatedAt": "2026-11-14T00:00:00.000Z", "retryAt": "2026-11-21T00:00:00.000Z" },
+      "technology": { "storeId": "1000000004", "status": "not_collected", "sdk": { "status": "not_collected" }, "bestRanks": { "status": "not_collected" } },
+      "dataRequests": { "data": [{ "id": "11111111-1111-4111-8111-000000000003", "kind": "paid_ads", "status": "requested", "requestedAt": "2026-11-14T08:02:00.000Z" }] }
+    },
+    {
+      "storeId": "1000000005", "label": "Example Meal Kit",
+      "adRefresh": { "appStoreId": "1000000005", "latest": null, "quota": { "kind": "daily", "limit": 3, "used": 1, "remaining": 2, "resetAt": "2026-11-19T08:00:00.000Z" } },
+      "aso": { "error": "404 not_found The requested resource was not found" },
+      "technology": { "storeId": "1000000005", "status": "not_collected", "sdk": { "status": "not_collected" }, "bestRanks": { "status": "not_collected" } },
+      "dataRequests": { "data": [] }
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+# One App Store id or apps.apple.com link per line, optional =Label. Lines starting with # are ignored.
+493145008=Headspace
+https://apps.apple.com/us/app/duolingo-language-lessons/id570060128=Duolingo
+1459969523   # no label: the report shows the store id

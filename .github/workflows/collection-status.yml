@@ -1,0 +1,41 @@
+# Example: every Monday, check where collection stands for each app in competitors.txt and post changes to Slack or Discord.
+# Disabled until you set the repository variable ENABLE_COLLECTION_STATUS=true.
+# Secrets: PEEKPANDA_TOKEN (PeekPanda API key, required), COLLECTION_STATUS_WEBHOOK_URL (optional).
+# Variable (optional): PEEKPANDA_TENANCY = personal or a workspace id; leave it unset for a key pinned to one workspace.
+# Calls per run: 4 per app (paid-ad refresh, ASO collection, technology, data requests). Peek allows 30 API and MCP calls
+# a UTC day, Panda 1,000, so on Peek keep the list to 7 apps or pass --checks with fewer reads.
+# Read-only: the job never requests a refresh. It fails (exit code 2) when an app is stale, not collected or has a problem.
+name: collection-status
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+jobs:
+  status:
+    if: vars.ENABLE_COLLECTION_STATUS == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/cache/restore@v4
+        with:
+          path: status-state.json
+          key: collection-status-state-${{ github.run_id }}
+          restore-keys: collection-status-state-
+      - name: collection status
+        env:
+          PEEKPANDA_TOKEN: ${{ secrets.PEEKPANDA_TOKEN }}
+          PEEKPANDA_TENANCY: ${{ vars.PEEKPANDA_TENANCY }}
+          COLLECTION_STATUS_WEBHOOK_URL: ${{ secrets.COLLECTION_STATUS_WEBHOOK_URL }}
+        run: |
+          ARGS="--apps-file competitors.txt --state status-state.json --commands --fail-on-stale"
+          if [ -n "$PEEKPANDA_TENANCY" ]; then ARGS="$ARGS --tenancy $PEEKPANDA_TENANCY"; fi
+          if [ -n "$COLLECTION_STATUS_WEBHOOK_URL" ]; then ARGS="$ARGS --webhook $COLLECTION_STATUS_WEBHOOK_URL"; fi
+          node cli.js $ARGS >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: status-state.json
+          key: collection-status-state-${{ github.run_id }}

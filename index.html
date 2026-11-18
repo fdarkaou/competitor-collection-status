@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Competitor collection status: which PeekPanda evidence is stale or not collected?</title>
+<meta name="description" content="Paste PeekPanda status reads (paid-ad refresh, ASO collection, technology, data requests) for your competitor apps and see which evidence is current, stale, running or not collected, with the refresh requests to send. Runs in your browser.">
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; color: #1b1b1f; }
+  textarea { width: 100%; min-height: 130px; font: 13px ui-monospace, monospace; }
+  input[type=number] { width: 5rem; }
+  button { padding: .45rem .9rem; margin: .5rem .5rem .5rem 0; cursor: pointer; }
+  table { border-collapse: collapse; width: 100%; margin-top: .5rem; font-size: 13px; }
+  th, td { border-bottom: 1px solid #ddd; padding: .35rem .5rem; text-align: left; vertical-align: top; }
+  .muted { color: #777; } .err { color: #cf222e; white-space: pre-wrap; }
+  .kpi { display: flex; flex-wrap: wrap; gap: .75rem; margin: .75rem 0; }
+  .kpi div { background: #f6f8fa; border-radius: 6px; padding: .4rem .8rem; min-width: 100px; } .kpi b { display: block; font-size: 20px; }
+  .st { font-size: 11px; padding: .05rem .4rem; border-radius: 4px; background: #eee; white-space: nowrap; }
+  .st.ok { background: #dcfce7; color: #166534; } .st.running { background: #dbeafe; color: #1e40af; } .st.stale { background: #fef3c7; color: #92400e; }
+  .st.missing, .st.problem, .st.error { background: #fee2e2; color: #991b1b; }
+  .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; } @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  label { font-weight: 600; font-size: 14px; }
+  pre { background: #f6f8fa; padding: .75rem; overflow-x: auto; font-size: 13px; }
+  footer { margin-top: 2.5rem; font-size: 13px; color: #555; }
+  a { color: #0969da; }
+</style>
+</head>
+<body>
+<h1>Competitor collection status</h1>
+<p>A case file is only as good as the dates on its evidence. For each competitor app, four status reads tell you where collection stands: the last paid-ad refresh you asked for, the ASO collection, the technology observation, and the data requests you filed. Paste them here and see which apps are current, which are stale, which are still running and which were never collected, with the refresh requests worth sending. Paste an earlier report too and it lists what changed. Nothing leaves your browser; this page never calls the API.</p>
+<div class="grid">
+  <div><label for="raw">Status reads</label><textarea id="raw" spellcheck="false" placeholder='The file the command-line version saves with --save, a report it printed with --format json, or for one app a JSON object like {"storeId":"493145008","adRefresh":{…},"aso":{…},"technology":{…},"dataRequests":{…}} (an array of those for several apps)'></textarea></div>
+  <div><label for="prev">Earlier report (optional)</label><textarea id="prev" spellcheck="false" placeholder="CLI --format json output or a --state file"></textarea>
+  <p><label for="days">Stale after</label> <input id="days" type="number" min="0" value="30"> days</p></div>
+</div>
+<div>
+  <button id="go">Check</button>
+  <button id="ex">Load example data</button>
+  <button id="csv" disabled>Download CSV</button>
+</div>
+<div id="err" class="err"></div>
+<div id="out"></div>
+
+<h2>Where to get the JSON</h2>
+<p>The reads come from <a href="https://peekpanda.com">PeekPanda</a>, an iOS competitor catalogue where every app has a case file of dated, stored evidence. Each read is one call from your plan's daily API and MCP allowance, scope <code>context:read</code>, and none of them starts collection:</p>
+<pre>for p in paid-ads/refresh aso/collection technology data-requests; do
+  curl --get "https://api.peekpanda.com/v1/competitors/ios/493145008/$p" \
+    --header "Authorization: Bearer $PEEKPANDA_TOKEN"
+done</pre>
+<p>Over MCP they are <code>get_app</code> with actions <code>ad_refresh_status</code>, <code>aso_status</code>, <code>technology</code> and <code>data_requests</code>. From technology this page uses only the documented status and date fields. <a href="https://peekpanda.com/docs/freshness-and-source-dates">Freshness and source dates</a> explains why a fresh answer about an old observation is still old. The command-line version on GitHub reads a whole list file, keeps a weekly diff, fails a CI job when something is stale and posts to Slack or Discord.</p>
+
+<footer>Open source (MIT): <a href="https://github.com/fdarkaou/competitor-collection-status">github.com/fdarkaou/competitor-collection-status</a>. Example data is made up.</footer>
+
+<script type="module">
+import { toReport, diff, diffLines, toCsv, refreshCommands, needsAttention, quotaLine, VERDICT_LABEL, RANK } from './status.js';
+const $ = (id) => document.getElementById(id);
+const h = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+let report = null;
+
+function asInput(j, staleDays) {
+  if (j?.tool === 'competitor-collection-status') return j;
+  if (j?.tool === 'competitor-collection-status/raw') return { ...j, staleDays };
+  const list = Array.isArray(j) ? j : [j];
+  const apps = list.map((a) => {
+    const storeId = a?.storeId ?? a?.adRefresh?.appStoreId ?? a?.aso?.storeId ?? a?.technology?.storeId;
+    if (!storeId) throw new Error('Each app needs a storeId (or an adRefresh, aso or technology read that carries it).');
+    return { storeId: String(storeId), label: a.label ?? null, adRefresh: a.adRefresh, aso: a.aso, technology: a.technology, dataRequests: a.dataRequests };
+  });
+  return { tool: 'competitor-collection-status/raw', fetchedAt: new Date().toISOString(), tenancy: null, staleDays, apps };
+}
+const cellOf = (c) => c.verdict === 'skipped' ? '<span class="muted">–</span>' : `<span class="st ${c.verdict}">${h(VERDICT_LABEL[c.verdict])}</span> ${h(c.why ?? c.error ?? '')}`;
+
+function render() {
+  $('err').textContent = '';
+  try {
+    const staleDays = Number($('days').value || 30);
+    report = toReport(asInput(JSON.parse($('raw').value), staleDays), { staleDays });
+    const s = report.summary;
+    const prevText = $('prev').value.trim();
+    const d = prevText ? diff(report, JSON.parse(prevText)) : null;
+    let html = `<div class="kpi"><div><b>${s.apps}</b>apps</div><div><b>${s.ok}</b>ok</div><div><b>${s.running}</b>running</div><div><b>${s.stale}</b>stale</div><div><b>${s.missing}</b>not collected</div><div><b>${s.problem + s.error}</b>problem</div><div><b>${s.openRequests}</b>open requests</div></div>`;
+    const q = quotaLine(report.adRefreshQuota); if (q) html += `<p>${h(q)}</p>`;
+    if (d) { const lines = diffLines(d); html += `<h2>Since the last check</h2><ul>${(lines.length ? lines : ['No changes.']).map((l) => `<li>${h(l)}</li>`).join('')}</ul>`; }
+    const rows = [...report.apps].sort((a, b) => RANK[a.verdict] - RANK[b.verdict]);
+    html += `<table><tr><th>App</th><th>Overall</th><th>Paid-ad refresh</th><th>ASO collection</th><th>Technology</th><th>Data requests</th></tr>${rows.map((a) => `<tr><td>${h(a.label ?? '')} <code>${h(a.storeId)}</code></td><td><span class="st ${a.verdict}">${h(VERDICT_LABEL[a.verdict])}</span></td><td>${cellOf(a.checks.ads)}</td><td>${cellOf(a.checks.aso)}</td><td>${cellOf(a.checks.tech)}</td><td>${a.checks.requests.verdict === 'skipped' ? '<span class="muted">–</span>' : h(a.checks.requests.why ?? a.checks.requests.error)}</td></tr>`).join('')}</table>`;
+    const cmds = refreshCommands(report);
+    if (needsAttention(report).length && cmds.length) html += `<h2>Refresh requests to review</h2><p class="muted">Scope content:write. This page never sends them. A paid-ad refresh counts toward its own daily refresh limit unless it fails.</p><pre>${h(cmds.join('\n'))}</pre>`;
+    html += `<p class="muted">Stale here = the payload date is older than ${h(report.staleDays)} days, this page's own threshold, not PeekPanda's freshness expectation; an old observation is still evidence of its date. A paid-ad refresh date is the last refresh someone asked for, not the age of the ads: scheduled collection keeps running without it.</p>`;
+    $('out').innerHTML = html;
+    $('csv').disabled = false;
+  } catch (e) { $('err').textContent = e.message; }
+}
+$('go').onclick = render;
+$('ex').onclick = async () => {
+  $('raw').value = await (await fetch('examples/run.json')).text();
+  $('prev').value = await (await fetch('examples/previous.json')).text();
+  render();
+};
+$('csv').onclick = () => {
+  const el = document.createElement('a');
+  el.href = URL.createObjectURL(new Blob([toCsv(report)], { type: 'text/csv' }));
+  el.download = 'collection-status.csv'; el.click();
+};
+</script>
+</body>
+</html>

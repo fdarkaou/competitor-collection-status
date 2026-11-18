@@ -1,0 +1,260 @@
+{
+  "tool": "competitor-collection-status",
+  "fetchedAt": "2026-11-11T08:00:00.000Z",
+  "tenancy": null,
+  "staleDays": 30,
+  "checks": [
+    "ads",
+    "aso",
+    "tech",
+    "requests"
+  ],
+  "adRefreshQuota": {
+    "kind": "daily",
+    "limit": 3,
+    "used": 1,
+    "remaining": 2,
+    "resetAt": "2026-11-19T08:00:00.000Z"
+  },
+  "summary": {
+    "apps": 4,
+    "ok": 0,
+    "running": 0,
+    "stale": 2,
+    "missing": 2,
+    "problem": 0,
+    "error": 0,
+    "openRequests": 1
+  },
+  "apps": [
+    {
+      "storeId": "1000000001",
+      "label": "Example Meal Planner",
+      "verdict": "stale",
+      "checks": {
+        "ads": {
+          "quota": {
+            "kind": "daily",
+            "limit": 3,
+            "used": 1,
+            "remaining": 2,
+            "resetAt": "2026-11-19T08:00:00.000Z"
+          },
+          "state": "completed",
+          "requestedAt": "2026-10-02T08:00:00.000Z",
+          "settledAt": "2026-10-02T08:05:00.000Z",
+          "newAdCount": 2,
+          "ageDays": 39,
+          "verdict": "stale",
+          "why": "last requested refresh settled 39 days ago, 2 new ad(s)"
+        },
+        "aso": {
+          "status": "completed",
+          "country": "us",
+          "language": "en_us",
+          "updatedAt": "2026-11-10T00:00:00.000Z",
+          "retryAt": null,
+          "ageDays": 1,
+          "verdict": "ok",
+          "why": "completed, updated 2026-11-10"
+        },
+        "tech": {
+          "status": "observed",
+          "collectedAt": "2026-11-01T04:00:00.000Z",
+          "sdk": {
+            "status": "observed",
+            "collectedAt": "2026-11-01T04:00:00.000Z",
+            "ageDays": 10
+          },
+          "bestRanks": {
+            "status": "observed",
+            "collectedAt": "2026-11-01T04:00:00.000Z",
+            "ageDays": 10
+          },
+          "ageDays": 10,
+          "verdict": "ok",
+          "why": "observed 2026-11-01"
+        },
+        "requests": {
+          "rows": [],
+          "open": 0,
+          "verdict": "ok",
+          "why": "none filed"
+        }
+      }
+    },
+    {
+      "storeId": "1000000002",
+      "label": "Example Recipe Box",
+      "verdict": "stale",
+      "checks": {
+        "ads": {
+          "quota": {
+            "kind": "daily",
+            "limit": 3,
+            "used": 1,
+            "remaining": 2,
+            "resetAt": "2026-11-19T08:00:00.000Z"
+          },
+          "state": "completed",
+          "requestedAt": "2026-09-20T08:00:00.000Z",
+          "settledAt": "2026-09-20T08:09:00.000Z",
+          "newAdCount": 11,
+          "ageDays": 51,
+          "verdict": "stale",
+          "why": "last requested refresh settled 51 days ago, 11 new ad(s)"
+        },
+        "aso": {
+          "status": "completed",
+          "country": "us",
+          "language": "en_us",
+          "updatedAt": "2026-08-30T00:00:00.000Z",
+          "retryAt": null,
+          "ageDays": 73,
+          "verdict": "stale",
+          "why": "completed, updated 73 days ago"
+        },
+        "tech": {
+          "status": "observed",
+          "collectedAt": "2026-09-02T04:00:00.000Z",
+          "sdk": {
+            "status": "observed",
+            "collectedAt": "2026-09-02T04:00:00.000Z",
+            "ageDays": 70
+          },
+          "bestRanks": {
+            "status": "observed",
+            "collectedAt": "2026-09-02T04:00:00.000Z",
+            "ageDays": 70
+          },
+          "ageDays": 70,
+          "verdict": "stale",
+          "why": "observed 70 days ago"
+        },
+        "requests": {
+          "rows": [
+            {
+              "id": "11111111-1111-4111-8111-000000000001",
+              "kind": "history",
+              "status": "requested",
+              "requestedAt": "2026-10-01T00:00:00.000Z",
+              "ageDays": 41
+            }
+          ],
+          "open": 1,
+          "verdict": "ok",
+          "why": "1 request(s): history requested 2026-10-01"
+        }
+      }
+    },
+    {
+      "storeId": "1000000003",
+      "label": "Example Grocery List",
+      "verdict": "missing",
+      "checks": {
+        "ads": {
+          "quota": {
+            "kind": "daily",
+            "limit": 3,
+            "used": 1,
+            "remaining": 2,
+            "resetAt": "2026-11-19T08:00:00.000Z"
+          },
+          "state": null,
+          "requestedAt": null,
+          "settledAt": null,
+          "newAdCount": null,
+          "verdict": "missing",
+          "why": "no requested refresh yet (latest is null)"
+        },
+        "aso": {
+          "status": "not_collected",
+          "country": "us",
+          "language": "en_us",
+          "updatedAt": null,
+          "retryAt": null,
+          "ageDays": null,
+          "verdict": "missing",
+          "why": "not_collected"
+        },
+        "tech": {
+          "status": "observed",
+          "collectedAt": "2026-11-05T04:00:00.000Z",
+          "sdk": {
+            "status": "observed",
+            "collectedAt": "2026-11-05T04:00:00.000Z",
+            "ageDays": 6
+          },
+          "bestRanks": {
+            "status": "not_collected",
+            "collectedAt": null,
+            "ageDays": null
+          },
+          "ageDays": 6,
+          "verdict": "missing",
+          "why": "observed, but best ranks not collected"
+        },
+        "requests": {
+          "rows": [],
+          "open": 0,
+          "verdict": "ok",
+          "why": "none filed"
+        }
+      }
+    },
+    {
+      "storeId": "1000000004",
+      "label": "Example Macro Coach",
+      "verdict": "missing",
+      "checks": {
+        "ads": {
+          "quota": {
+            "kind": "daily",
+            "limit": 3,
+            "used": 1,
+            "remaining": 2,
+            "resetAt": "2026-11-19T08:00:00.000Z"
+          },
+          "state": null,
+          "requestedAt": null,
+          "settledAt": null,
+          "newAdCount": null,
+          "verdict": "missing",
+          "why": "no requested refresh yet (latest is null)"
+        },
+        "aso": {
+          "status": "queued",
+          "country": "us",
+          "language": "en_us",
+          "updatedAt": "2026-11-14T00:00:00.000Z",
+          "retryAt": "2026-11-21T00:00:00.000Z",
+          "ageDays": 0,
+          "verdict": "running",
+          "why": "queued, retry after 2026-11-21T00:00:00.000Z"
+        },
+        "tech": {
+          "status": "not_collected",
+          "collectedAt": null,
+          "sdk": {
+            "status": "not_collected",
+            "collectedAt": null,
+            "ageDays": null
+          },
+          "bestRanks": {
+            "status": "not_collected",
+            "collectedAt": null,
+            "ageDays": null
+          },
+          "verdict": "missing",
+          "why": "status not_collected; opening the read does not start collection"
+        },
+        "requests": {
+          "rows": [],
+          "open": 0,
+          "verdict": "ok",
+          "why": "none filed"
+        }
+      }
+    }
+  ]
+}
